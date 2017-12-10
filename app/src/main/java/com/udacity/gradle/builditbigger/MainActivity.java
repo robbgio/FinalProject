@@ -9,9 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import com.example.JavaJokes;
 import com.example.android.androidjokes.JokeActivity;
 import com.example.rgiordano.myapplication.backendjokes.myApi.MyApi;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -25,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Robbert"));
+
     }
 
 
@@ -50,17 +48,17 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public void launchJokeActivity(View view){
-        Intent myIntent = new Intent(this, JokeActivity.class);
-        String joke = new JavaJokes().getJoke();
-        myIntent.putExtra("JOKE",joke);
-        startActivity(myIntent);
-    }
+    //public void launchJokeActivity(View view){
+    //    Intent myIntent = new Intent(this, JokeActivity.class);
+    //    String joke = new JavaJokes().getJoke();
+    //    myIntent.putExtra("JOKE",joke);
+    //    startActivity(myIntent);
+    //}
 
     public void tellJoke(View view) {
         //Toast.makeText(this, joke, Toast.LENGTH_SHORT).show();
-
-        launchJokeActivity(view);
+        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Robb"));
+        //launchJokeActivity(view);
     }
 }
 
@@ -77,6 +75,7 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
                     // - 10.0.2.2 is localhost's IP address in Android emulator
                     // - turn off compression when running against local devappserver
                     .setRootUrl("https://robbjokes.appspot.com/_ah/api/");
+                    //.setRootUrl("http://192.168.1.66:8080/_ah/api/")
                     //.setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
                     //    @Override
                     //    public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
@@ -92,7 +91,8 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
         String name = params[0].second;
 
         try {
-            return myApiService.sayHi(name).execute().getData();
+            //return myApiService.sayHi(name).execute().getData();
+            return myApiService.getJokeGCEapi().execute().getJokeGCE();
         } catch (IOException e) {
             return e.getMessage();
         }
@@ -100,7 +100,11 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
 
     @Override
     protected void onPostExecute(String result) {
-        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+        Intent myIntent = new Intent(context, JokeActivity.class);
+        String joke = result;
+        myIntent.putExtra("JOKE",joke);
+        context.startActivity(myIntent);
     }
 }
 
