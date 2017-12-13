@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +16,7 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements JokeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +56,26 @@ public class MainActivity extends AppCompatActivity {
 
     public void tellJoke(View view) {
         //Toast.makeText(this, joke, Toast.LENGTH_SHORT).show();
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Robb"));
+        new EndpointsAsyncTask().execute(this);
         //launchJokeActivity(view);
+    }
+
+
+    @Override
+    public void onReceived(String joke) {
+        Intent myIntent = new Intent(this, JokeActivity.class);
+        myIntent.putExtra("JOKE", joke);
+        this.startActivity(myIntent);
     }
 }
 
-class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+class EndpointsAsyncTask extends AsyncTask<JokeListener, Void, String> {
     private static MyApi myApiService = null;
     private Context context;
+    private JokeListener jokeListener;
 
     @Override
-    protected String doInBackground(Pair<Context, String>... params) {
+    protected String doInBackground(JokeListener... params) {
         if(myApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
@@ -87,8 +95,11 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
             myApiService = builder.build();
         }
 
-        context = params[0].first;
-        String name = params[0].second;
+        //context = params[0].first;
+        jokeListener = params[0];
+        //String name = params[0].second;
+
+
 
         try {
             //return myApiService.sayHi(name).execute().getData();
@@ -101,9 +112,10 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
     @Override
     protected void onPostExecute(String result) {
         //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-        Intent myIntent = new Intent(context, JokeActivity.class);
-        myIntent.putExtra("JOKE",result);
-        context.startActivity(myIntent);
+        jokeListener.onReceived(result);
+        //Intent myIntent = new Intent(context, JokeActivity.class);
+        //myIntent.putExtra("JOKE",result);
+        //context.startActivity(myIntent);
     }
 }
 
