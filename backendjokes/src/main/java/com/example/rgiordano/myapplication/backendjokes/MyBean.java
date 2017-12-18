@@ -13,11 +13,4 @@ public class MyBean {
     public String getJokeGCE(){
         return javajoke.getJoke();
     }
-    //public String getData() {
-    //    return myData;
-    //}
-
-    //public void setData(String data) {
-    //   myData = data;
-    //}
 }

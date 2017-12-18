@@ -95,11 +95,7 @@ class EndpointsAsyncTask extends AsyncTask<JokeListener, Void, String> {
             myApiService = builder.build();
         }
 
-        //context = params[0].first;
         jokeListener = params[0];
-        //String name = params[0].second;
-
-
 
         try {
             //return myApiService.sayHi(name).execute().getData();
@@ -111,11 +107,7 @@ class EndpointsAsyncTask extends AsyncTask<JokeListener, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
         jokeListener.onReceived(result);
-        //Intent myIntent = new Intent(context, JokeActivity.class);
-        //myIntent.putExtra("JOKE",result);
-        //context.startActivity(myIntent);
     }
 }
 

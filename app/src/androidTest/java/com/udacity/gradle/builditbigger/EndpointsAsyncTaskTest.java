@@ -3,7 +3,6 @@ package com.udacity.gradle.builditbigger;
 import android.app.Application;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ApplicationTestCase;
-import android.util.Log;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +27,6 @@ public class EndpointsAsyncTaskTest extends ApplicationTestCase<Application> imp
         new EndpointsAsyncTask().execute(this).get();
         assertNotNull(joke);
         assertFalse(joke.isEmpty());
-        Log.d("Joke:",joke);
     }
     @Override
     public void onReceived(String joke) {
